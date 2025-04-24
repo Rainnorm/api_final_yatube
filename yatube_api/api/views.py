@@ -24,12 +24,12 @@ class PostViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = (OwnerOrReadOnly,)
-    
+
     def get_post(self):
         post_id = self.kwargs.get('post_id')
         post = get_object_or_404(Post, id=post_id)
         return post
-    
+
     def get_queryset(self):
         new_queryset = Comment.objects.filter(post=self.get_post())
         return new_queryset
@@ -56,11 +56,10 @@ class FollowViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Follow.objects.filter(user=self.request.user)
-    
+
     def perform_create(self, serializer):
         serializer.save(
             user=self.request.user, following=get_object_or_404(
                 User, username=self.request.data['following']
             )
         )
-        
